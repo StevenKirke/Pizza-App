@@ -17,5 +17,6 @@ struct ListMeals: Codable {
     var categoryName: String
     var mealName: String
     var imageUrl: String
+    var imageData : Data
     var description: String
 }

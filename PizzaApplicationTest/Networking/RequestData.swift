@@ -10,7 +10,7 @@ import SwiftUI
 class RequestData {
     
     var responseData: ResponseData = ResponseData()
-    
+    var json: DecodeJson = DecodeJson()
     
     func getData<T: Decodable>(url: String, model: T, returnData: @escaping (T?, String?) -> Void) {
         guard let url = URL(string: url) else {
@@ -39,5 +39,23 @@ class RequestData {
             }
         }
         dataTask.resume()
+    }
+    
+    func getImage(url: String?, returnData: @escaping (Data?) -> Void) {
+        guard let url = URL(string: url ?? "") else {
+            print("Error convert URL")
+            return
+        }
+        let task = URLSession.shared.dataTask(with: url) { data, _, error in
+            if error != nil {
+                return
+            }
+            guard let data = data else {
+                return
+            }
+            return returnData(data)
+        }
+        task.resume()
+        
     }
 }

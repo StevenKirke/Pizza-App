@@ -39,6 +39,10 @@
 		32F0B2E52A485AEA00CD0D96 /* String.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32F0B2E42A485AEA00CD0D96 /* String.swift */; };
 		32F0B2E72A485B9200CD0D96 /* MealDescription.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32F0B2E62A485B9200CD0D96 /* MealDescription.swift */; };
 		32F0B2E92A489A3700CD0D96 /* CustomImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32F0B2E82A489A3700CD0D96 /* CustomImage.swift */; };
+		32F0B2EB2A48F36600CD0D96 /* Sceleton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32F0B2EA2A48F36500CD0D96 /* Sceleton.swift */; };
+		32F0B2ED2A48F73500CD0D96 /* OffsetsModefier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32F0B2EC2A48F73500CD0D96 /* OffsetsModefier.swift */; };
+		32F0B2F02A48FC1800CD0D96 /* ScelenonForMenuView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32F0B2EF2A48FC1800CD0D96 /* ScelenonForMenuView.swift */; };
+		32F0B2F42A48FEC900CD0D96 /* UserDefaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32F0B2F32A48FEC900CD0D96 /* UserDefaults.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -76,6 +80,10 @@
 		32F0B2E42A485AEA00CD0D96 /* String.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = String.swift; sourceTree = "<group>"; };
 		32F0B2E62A485B9200CD0D96 /* MealDescription.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MealDescription.swift; sourceTree = "<group>"; };
 		32F0B2E82A489A3700CD0D96 /* CustomImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomImage.swift; sourceTree = "<group>"; };
+		32F0B2EA2A48F36500CD0D96 /* Sceleton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sceleton.swift; sourceTree = "<group>"; };
+		32F0B2EC2A48F73500CD0D96 /* OffsetsModefier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OffsetsModefier.swift; sourceTree = "<group>"; };
+		32F0B2EF2A48FC1800CD0D96 /* ScelenonForMenuView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScelenonForMenuView.swift; sourceTree = "<group>"; };
+		32F0B2F32A48FEC900CD0D96 /* UserDefaults.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaults.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -115,6 +123,7 @@
 				32F0B2AD2A460E6500CD0D96 /* ModelViews */,
 				32F0B2B02A460E8900CD0D96 /* ElementInterfaces */,
 				32F0B2BB2A46220A00CD0D96 /* Enums */,
+				32F0B2F22A48FEA100CD0D96 /* WorkUserDefaults */,
 				32F0B2D52A48295800CD0D96 /* Networking */,
 				32F0B2B32A46170B00CD0D96 /* Extensions */,
 				32F0B2A82A460E0000CD0D96 /* Application */,
@@ -164,7 +173,7 @@
 			isa = PBXGroup;
 			children = (
 				32F0B2B12A460F4200CD0D96 /* ContentView.swift */,
-				32F0B2C92A4723EC00CD0D96 /* MenuView.swift */,
+				32F0B2F12A48FC2500CD0D96 /* MenuView */,
 				32F0B2CB2A47243D00CD0D96 /* ContactView.swift */,
 				32F0B2CD2A47244D00CD0D96 /* ProfileView.swift */,
 				32F0B2CF2A47246A00CD0D96 /* BasketView.swift */,
@@ -207,6 +216,8 @@
 				32F0B2D12A47473900CD0D96 /* RoundedCornersShape.swift */,
 				32F0B2D32A4770C500CD0D96 /* ObservableScrollView.swift */,
 				32F0B2E82A489A3700CD0D96 /* CustomImage.swift */,
+				32F0B2EA2A48F36500CD0D96 /* Sceleton.swift */,
+				32F0B2EC2A48F73500CD0D96 /* OffsetsModefier.swift */,
 			);
 			path = ElementInterfaces;
 			sourceTree = "<group>";
@@ -247,6 +258,23 @@
 				32F0B2DA2A4829BF00CD0D96 /* DecodeJson.swift */,
 			);
 			path = Networking;
+			sourceTree = "<group>";
+		};
+		32F0B2F12A48FC2500CD0D96 /* MenuView */ = {
+			isa = PBXGroup;
+			children = (
+				32F0B2C92A4723EC00CD0D96 /* MenuView.swift */,
+				32F0B2EF2A48FC1800CD0D96 /* ScelenonForMenuView.swift */,
+			);
+			path = MenuView;
+			sourceTree = "<group>";
+		};
+		32F0B2F22A48FEA100CD0D96 /* WorkUserDefaults */ = {
+			isa = PBXGroup;
+			children = (
+				32F0B2F32A48FEC900CD0D96 /* UserDefaults.swift */,
+			);
+			path = WorkUserDefaults;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -325,9 +353,11 @@
 				32F0B2BE2A46E08000CD0D96 /* ContentViewModel.swift in Sources */,
 				32F0B2D92A4829A100CD0D96 /* ResponseData.swift in Sources */,
 				32F0B2B82A461F8100CD0D96 /* Images.swift in Sources */,
+				32F0B2F42A48FEC900CD0D96 /* UserDefaults.swift in Sources */,
 				32F0B2E72A485B9200CD0D96 /* MealDescription.swift in Sources */,
 				32F0B2E32A48461F00CD0D96 /* ListCategoryAndMeals.swift in Sources */,
 				32F0B2992A4601A000CD0D96 /* ViewController.swift in Sources */,
+				32F0B2F02A48FC1800CD0D96 /* ScelenonForMenuView.swift in Sources */,
 				32F0B2BA2A4620D600CD0D96 /* CustomTabBar.swift in Sources */,
 				32F0B2C02A46E19E00CD0D96 /* CustomNanigationTabBar.swift in Sources */,
 				32F0B2C62A47107000CD0D96 /* CardDiscriptions.swift in Sources */,
@@ -348,7 +378,9 @@
 				32F0B2B62A461CE000CD0D96 /* Color.swift in Sources */,
 				32F0B2972A4601A000CD0D96 /* SceneDelegate.swift in Sources */,
 				32F0B2DD2A482E0A00CD0D96 /* Categories.swift in Sources */,
+				32F0B2ED2A48F73500CD0D96 /* OffsetsModefier.swift in Sources */,
 				32F0B2E12A48410D00CD0D96 /* Meals.swift in Sources */,
+				32F0B2EB2A48F36600CD0D96 /* Sceleton.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

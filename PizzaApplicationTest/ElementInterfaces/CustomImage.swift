@@ -16,7 +16,7 @@ struct CustomImage: View {
             switch phase {
                 case .empty:
                     ProgressView()
-                        .tint(.red)
+                        .tint(.c_AAAAAD)
                 case .success(let image):
                     image
                         .resizable()

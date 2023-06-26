@@ -14,18 +14,18 @@ struct MenuView: View {
     
     @State var isShow: Bool = false
     @State var scrollOffset = CGFloat.zero
-    
+    @State var currentIndex: Int = 0
     
     var body: some View {
         VStack(spacing: 0) {
-            HeaderView(contenVM: contenVM, currentLabel: $contenVM.currentLabel, isShow: $isShow)
+            HeaderView(contenVM: contenVM, currentIndex: $currentIndex, isShow: $isShow)
                 .coordinateSpace(name:  "SCROLL")
             ObservableScrollView(scrollOffset: $scrollOffset) { proxy in
                 ScrollViewReader { proxy in
                     if contenVM.isLoad {
                         ForEach(contenVM.categoryAndMealList.indices, id: \.self) { indexCategory in
                             VStack(spacing: 0) {
-                                CardDiscriptions(currentLabel: $contenVM.currentLabel,
+                                CardDiscriptions(currentIndex: $currentIndex, index: indexCategory,
                                                  nameCategory: contenVM.categoryAndMealList[indexCategory].categoryName,
                                                  categories: contenVM.categoryAndMealList[indexCategory].listMeals)
                                 .onChange(of: scrollOffset) { newValue in
@@ -42,11 +42,15 @@ struct MenuView: View {
                                     }
                                 }
                             }
-                            .onChange(of: contenVM.currentLabel) { newValue in
+                            .onChange(of: currentIndex) { newValue in
                                 withAnimation(anim()) {
-                                    proxy.scrollTo(contenVM.currentLabel, anchor: .topTrailing)
+                                    proxy.scrollTo(newValue, anchor: .topTrailing)
                                 }
                             }
+                        }
+                    } else {
+                        ForEach(0...4, id: \.self) { _ in
+                            CardDiscriptionsSceleton()
                         }
                     }
                 }
@@ -62,14 +66,14 @@ struct MenuView: View {
 }
 
 
-
 struct HeaderView: View {
     
     @ObservedObject var contenVM: ContentViewModel
     
     
-    @Binding var currentLabel: String
+    @Binding var currentIndex: Int
     @Binding var isShow: Bool
+
     
     var title: String = "Moskow"
     
@@ -80,7 +84,8 @@ struct HeaderView: View {
                     .customFont(17)
                     .foregroundColor(.c_1C222B)
                     .font(Font.footnote.weight(.medium))
-                Button(action: {}) {
+                Button(action: {
+                }) {
                     Image(systemName: "chevron.down")
                         .font(.system(size: 16))
                         .foregroundColor(.c_222831)
@@ -96,12 +101,13 @@ struct HeaderView: View {
                 ScrollViewReader { proxy in
                     HStack(spacing: 20) {
                         if !contenVM.isLoad {
-                            Text("111111")
-                                .foregroundColor(.red)
+                            ForEach(0...4, id: \.self) { _ in
+                                ButtonForMenuSceleton()
+                            }
                         } else {
                             ForEach(contenVM.categoryAndMealList.indices, id: \.self) { index in
                                 let name = contenVM.categoryAndMealList[index].categoryName
-                                ButtonForMenu(currentLabel: $currentLabel, label: name)
+                                ButtonForMenu(currenIndex: $currentIndex, title: name, index: index)
                             }
                         }
                     }
@@ -114,30 +120,32 @@ struct HeaderView: View {
     }
 }
 
+
 struct ButtonForMenu: View {
     
-    @Binding var currentLabel: String
-    var label: String
+    @Binding var currenIndex: Int
+    var title: String
+    var index: Int
     
     var body: some View {
         Button(action: {
             DispatchQueue.main.async {
                 withAnimation(.easeOut) {
-                    self.currentLabel = label
+                    self.currenIndex = index
                 }
             }
         }) {
-            Text(label)
+            Text(title)
                 .customFont(13)
-                .foregroundColor(label == currentLabel.replacingOccurrences(of: " SCROLL", with: "") ? .c_FD3A69 : .c_FD3A69_4)
-                .font(label == currentLabel ? Font.footnote.weight(.bold) : Font.footnote.weight(.regular))
+                .foregroundColor(index == currenIndex ? .c_FD3A69 : .c_FD3A69_4)
+                .font(index == currenIndex ? Font.footnote.weight(.bold) : Font.footnote.weight(.regular))
                 .multilineTextAlignment(.center)
         }
         .padding(.vertical, 8)
         .padding(.horizontal, 16)
         .background(
             ZStack {
-                if label == currentLabel.replacingOccurrences(of: " SCROLL", with: "") {
+                if index == currenIndex {
                     RoundedRectangle(cornerRadius: 20)
                         .fill(Color.c_FD3A69_2)
                 } else {
@@ -146,7 +154,7 @@ struct ButtonForMenu: View {
                 }
             }
         )
-        .id(label)
+        .id(index)
     }
 }
 
@@ -160,35 +168,3 @@ struct MenuView_Previews: PreviewProvider {
 #endif
 
 
-
-struct OffsetsModefier: ViewModifier {
-    
-    @Binding var currentLabel: String
-    var label: String
-    
-    func body(content: Content) -> some View {
-        content
-            .overlay(
-                GeometryReader { proxy in
-                    Color.clear
-                        .preference(key: OffsetKey.self, value: proxy.frame(in: .named("SCROLL")))
-                }
-            )
-            .onPreferenceChange(OffsetKey.self) { proxy in
-                withAnimation(.easeInOut) {
-                    let offset = proxy.minY
-                    currentLabel = (offset < 20 && -offset < (proxy.minX / 2) && currentLabel != label ? "\(label) SCROLL" : currentLabel)
-                }
-                
-            }
-    }
-}
-
-struct OffsetKey: PreferenceKey {
-    
-    static var defaultValue: CGRect = .zero
-    
-    static func reduce(value: inout CGRect, nextValue: () -> CGRect) {
-        value = nextValue()
-    }
-}

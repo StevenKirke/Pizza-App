@@ -9,9 +9,11 @@ import Foundation
 
 class ContentViewModel: ObservableObject {
     
-    var requestData: RequestData = RequestData()
+    private var requestData: RequestData = RequestData()
+    private var workUserDefaults: WorkUserDefaults = WorkUserDefaults()
     
     @Published var isLoad: Bool = false
+    @Published var isUserDefault: Bool = false
     
     @Published var backInMenu: Bool = false
     @Published var itemNenu: CustomTabBar = CustomTabBar.menu
@@ -22,7 +24,7 @@ class ContentViewModel: ObservableObject {
     
     @Published var categoryAndMealList: [CategoryForList] = []
     
-    @Published var currentLabel: String = ""
+    //@Published var currentIndex: Int = 0
     
     init() {
         getCategories()
@@ -45,6 +47,7 @@ class ContentViewModel: ObservableObject {
             getMeals {
                 self.getDiscriptionMeal() {
                     self.isLoad = true
+                    //self.saveImage()
                 }
             }
         }
@@ -66,7 +69,11 @@ class ContentViewModel: ObservableObject {
                     }
                     if !currentData.meals.isEmpty {
                         for(ind, meal) in currentData.meals.enumerated() {
-                            self.categoryAndMealList[index].listMeals.append(ListMeals(categoryName: elem.categoryName, mealName: meal.strMeal, imageUrl: meal.strMealThumb.trim(), description: ""))
+                            self.categoryAndMealList[index].listMeals.append(ListMeals(categoryName: elem.categoryName,
+                                                                                       mealName: meal.strMeal,
+                                                                                       imageUrl: meal.strMealThumb.trim(),
+                                                                                       imageData: Data(),
+                                                                                       description: ""))
                             if ind > 10 {
                                 break
                             }
@@ -80,6 +87,24 @@ class ContentViewModel: ObservableObject {
         }
     }
     
+    private func saveImage() {
+        if !categoryAndMealList.isEmpty {
+            for (index, _) in self.categoryAndMealList.enumerated() {
+                for (ind, meal) in self.categoryAndMealList[index].listMeals.enumerated() {
+                    self.requestData.getImage(url: meal.imageUrl) { data in
+                        guard let currentData = data else {
+                            return
+                        }
+                        DispatchQueue.main.async {
+                            self.categoryAndMealList[index].listMeals[ind].imageData = currentData
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
+    
     private func getDiscriptionMeal(result: @escaping () -> Void) {
         if !categoryAndMealList.isEmpty {
             for (index, _) in self.categoryAndMealList.enumerated() {
@@ -90,7 +115,7 @@ class ContentViewModel: ObservableObject {
                         if error != "" {
                             print("errors \(String(describing: error))")
                         }
-
+                        
                         guard let currentData = data?.meals.first else {
                             return
                         }
@@ -143,11 +168,36 @@ class ContentViewModel: ObservableObject {
                 }
             }
         }
-        guard let name = categoryAndMealList.first?.categoryName else {
-            return
-        }
-        self.currentLabel = name
+//        guard let name = categoryAndMealList.first?.categoryName else {
+//            return
+//        }
+        //self.currentLabel = name
+    }
+    /*
+    func saveData() {
+        self.workUserDefaults.saveUserDefault(currentData: categoryAndMealList)
+        print("save user data")
+        self.isUserDefault = true
     }
     
+    func loadData() {
+        DispatchQueue.main.async {
+            guard let userDefault = self.workUserDefaults.writeUserDefault(model: self.categoryAndMealList) else {
+                print("Error load user default")
+                return
+            }
+            self.categoryAndMealList = userDefault
+            print(self.categoryAndMealList)
+        }
+    }
     
+    func removeData() {
+        self.workUserDefaults.removeUserDefault()
+        print("delete user data")
+    }
+    
+    func removeAllData() {
+        self.categoryAndMealList = []
+    }
+    */
 }

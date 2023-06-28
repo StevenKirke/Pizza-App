@@ -27,7 +27,7 @@ class ContentViewModel: ObservableObject {
     //@Published var currentIndex: Int = 0
     
     init() {
-        getCategories()
+        //getCategories()
     }
     
     private func getCategories() {

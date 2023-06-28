@@ -43,6 +43,7 @@
 		32F0B2ED2A48F73500CD0D96 /* OffsetsModefier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32F0B2EC2A48F73500CD0D96 /* OffsetsModefier.swift */; };
 		32F0B2F02A48FC1800CD0D96 /* ScelenonForMenuView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32F0B2EF2A48FC1800CD0D96 /* ScelenonForMenuView.swift */; };
 		32F0B2F42A48FEC900CD0D96 /* UserDefaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32F0B2F32A48FEC900CD0D96 /* UserDefaults.swift */; };
+		32F0B2F62A4B1E5A00CD0D96 /* TestScrollViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32F0B2F52A4B1E5A00CD0D96 /* TestScrollViews.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -84,6 +85,7 @@
 		32F0B2EC2A48F73500CD0D96 /* OffsetsModefier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OffsetsModefier.swift; sourceTree = "<group>"; };
 		32F0B2EF2A48FC1800CD0D96 /* ScelenonForMenuView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScelenonForMenuView.swift; sourceTree = "<group>"; };
 		32F0B2F32A48FEC900CD0D96 /* UserDefaults.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaults.swift; sourceTree = "<group>"; };
+		32F0B2F52A4B1E5A00CD0D96 /* TestScrollViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestScrollViews.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -218,6 +220,7 @@
 				32F0B2E82A489A3700CD0D96 /* CustomImage.swift */,
 				32F0B2EA2A48F36500CD0D96 /* Sceleton.swift */,
 				32F0B2EC2A48F73500CD0D96 /* OffsetsModefier.swift */,
+				32F0B2F52A4B1E5A00CD0D96 /* TestScrollViews.swift */,
 			);
 			path = ElementInterfaces;
 			sourceTree = "<group>";
@@ -354,6 +357,7 @@
 				32F0B2D92A4829A100CD0D96 /* ResponseData.swift in Sources */,
 				32F0B2B82A461F8100CD0D96 /* Images.swift in Sources */,
 				32F0B2F42A48FEC900CD0D96 /* UserDefaults.swift in Sources */,
+				32F0B2F62A4B1E5A00CD0D96 /* TestScrollViews.swift in Sources */,
 				32F0B2E72A485B9200CD0D96 /* MealDescription.swift in Sources */,
 				32F0B2E32A48461F00CD0D96 /* ListCategoryAndMeals.swift in Sources */,
 				32F0B2992A4601A000CD0D96 /* ViewController.swift in Sources */,

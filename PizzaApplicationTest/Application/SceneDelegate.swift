@@ -29,7 +29,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         //guard let _ = (scene as? UIWindowScene) else { return }
         
         let globalModel = GlobalModel()
-        let contentView = ContentView(globalModel: globalModel)
+        //let contentView = ContentView(globalModel: globalModel)
+        let contentView = TestScrollViews(globalModel: globalModel)
         
 
         if let windowScene = scene as? UIWindowScene {

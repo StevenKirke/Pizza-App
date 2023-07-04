@@ -14,47 +14,41 @@ struct MenuView: View {
     
     @State var isShow: Bool = false
     @State var scrollOffset = CGFloat.zero
-    @State var currentIndex: Int = 0
+    @State var currentIndex: String = "0"
     
     var body: some View {
         VStack(spacing: 0) {
             HeaderView(contenVM: contenVM, currentIndex: $currentIndex, isShow: $isShow)
-                .coordinateSpace(name:  "SCROLL")
-            ObservableScrollView(scrollOffset: $scrollOffset) { proxy in
-                ScrollViewReader { proxy in
-                    if contenVM.isLoad {
+            ObservableScrollView(scrollOffset: $scrollOffset, currentIndex: $currentIndex) { proxy in
+                if contenVM.isLoad {
+                    VStack(spacing: 0) {
                         ForEach(contenVM.categoryAndMealList.indices, id: \.self) { indexCategory in
-                            VStack(spacing: 0) {
-                                CardDiscriptions(currentIndex: $currentIndex, index: indexCategory,
-                                                 nameCategory: contenVM.categoryAndMealList[indexCategory].categoryName,
-                                                 categories: contenVM.categoryAndMealList[indexCategory].listMeals)
-                                .onChange(of: scrollOffset) { newValue in
-                                    DispatchQueue.main.async {
-                                        if scrollOffset <= -50 {
-                                            withAnimation(anim()) {
-                                                self.isShow = true
-                                            }
-                                        } else if scrollOffset >= 100 {
-                                            withAnimation(anim()) {
-                                                self.isShow = false
-                                            }
-                                        }
+                            CardDiscriptions(currentIndex: $currentIndex, index: String(indexCategory),
+                                             nameCategory: contenVM.categoryAndMealList[indexCategory].categoryName,
+                                             categories: contenVM.categoryAndMealList[indexCategory].listMeals)
+                            .onChange(of: scrollOffset) { newValue in
+                                withAnimation(anim()) {
+                                    if scrollOffset <= -50 {
+                                        self.isShow = true
+                                    } else if scrollOffset >= 100 {
+                                        self.isShow = false
                                     }
                                 }
                             }
                             .onChange(of: currentIndex) { newValue in
-                                withAnimation(anim()) {
-                                    proxy.scrollTo(newValue, anchor: .topTrailing)
+                                withAnimation(.easeInOut) {
+                                    proxy.scrollTo(newValue.replacingOccurrences(of: " TAP", with: ""), anchor: .topTrailing)
                                 }
                             }
                         }
-                    } else {
-                        ForEach(0...4, id: \.self) { _ in
-                            CardDiscriptionsSceleton()
-                        }
+                    }
+                } else {
+                    ForEach(0...4, id: \.self) { _ in
+                        CardDiscriptionsSceleton()
                     }
                 }
             }
+            .coordinateSpace(name:  "SCROLL")
             .background(Color.c_F3F5F9)
             .mask(RoundedRectangle(cornerRadius: 21.0))
         }
@@ -71,9 +65,9 @@ struct HeaderView: View {
     @ObservedObject var contenVM: ContentViewModel
     
     
-    @Binding var currentIndex: Int
+    @Binding var currentIndex: String
     @Binding var isShow: Bool
-
+    
     
     var title: String = "Moskow"
     
@@ -97,8 +91,8 @@ struct HeaderView: View {
                 BannerSBlock()
                     .opacity(isShow ? 1.0 : 0.0)
             }
-            ScrollView(.horizontal, showsIndicators: false) {
-                ScrollViewReader { proxy in
+            ScrollViewReader { proxy in
+                ScrollView(.horizontal, showsIndicators: false) {
                     HStack(spacing: 20) {
                         if !contenVM.isLoad {
                             ForEach(0...4, id: \.self) { _ in
@@ -107,56 +101,61 @@ struct HeaderView: View {
                         } else {
                             ForEach(contenVM.categoryAndMealList.indices, id: \.self) { index in
                                 let name = contenVM.categoryAndMealList[index].categoryName
-                                ButtonForMenu(currenIndex: $currentIndex, title: name, index: index)
+                                Button(action: {
+                                    self.currentIndex = "\(index) TAP"
+                                    print(self.currentIndex)
+                                    proxy.scrollTo(currentIndex.replacingOccurrences(of: " TAP", with: ""), anchor: .leading)
+                                }) {
+                                    Text(name)
+                                        .customFont(13)
+                                        .foregroundColor(anser(String(index)) ? .c_FD3A69 : .c_FD3A69_4)
+                                        .font(anser(String(index)) ? Font.footnote.weight(.bold) : Font.footnote.weight(.regular))
+                                        .multilineTextAlignment(.center)
+                                }
+                                .padding(.vertical, 8)
+                                .padding(.horizontal, 16)
+                                .background(
+                                    ZStack {
+                                        if anser(String(index)) {
+                                            RoundedRectangle(cornerRadius: 20)
+                                                .fill(Color.c_FD3A69_2)
+                                        } else {
+                                            RoundedRectangle(cornerRadius: 20)
+                                                .stroke(Color.c_FD3A69_4, lineWidth: 1)
+                                        }
+                                    }
+                                )
+                                .id(index)
+
+ 
                             }
                         }
                     }
                     .padding(.vertical, 1)
                     .padding(.horizontal, 18)
                 }
+                .onChange(of: currentIndex, perform: { _ in
+                    if currentIndex.contains(" SCROLL") {
+                        withAnimation(.easeInOut) {
+                            proxy.scrollTo(currentIndex.replacingOccurrences(of: " SCROLL", with: ""), anchor: .topTrailing)
+                        }
+                    }
+                })
             }
         }
         .padding(.bottom, 10)
     }
-}
-
-
-struct ButtonForMenu: View {
     
-    @Binding var currenIndex: Int
-    var title: String
-    var index: Int
     
-    var body: some View {
-        Button(action: {
-            DispatchQueue.main.async {
-                withAnimation(.easeOut) {
-                    self.currenIndex = index
-                }
-            }
-        }) {
-            Text(title)
-                .customFont(13)
-                .foregroundColor(index == currenIndex ? .c_FD3A69 : .c_FD3A69_4)
-                .font(index == currenIndex ? Font.footnote.weight(.bold) : Font.footnote.weight(.regular))
-                .multilineTextAlignment(.center)
+     func anser(_ index: String) -> Bool {
+        if currentIndex.replacingOccurrences(of: " TAP", with: "") == index
+            || currentIndex.replacingOccurrences(of: " SCROLL", with: "") == index {
+            return true
         }
-        .padding(.vertical, 8)
-        .padding(.horizontal, 16)
-        .background(
-            ZStack {
-                if index == currenIndex {
-                    RoundedRectangle(cornerRadius: 20)
-                        .fill(Color.c_FD3A69_2)
-                } else {
-                    RoundedRectangle(cornerRadius: 20)
-                        .stroke(Color.c_FD3A69_4, lineWidth: 1)
-                }
-            }
-        )
-        .id(index)
+        return false
     }
 }
+
 
 
 #if DEBUG
@@ -166,5 +165,4 @@ struct MenuView_Previews: PreviewProvider {
     }
 }
 #endif
-
 

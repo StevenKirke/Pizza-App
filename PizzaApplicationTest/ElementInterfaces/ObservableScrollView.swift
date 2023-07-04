@@ -12,17 +12,20 @@ struct ObservableScrollView<Content>: View where Content : View {
     @Namespace var scrollSpace
     
     @Binding var scrollOffset: CGFloat
+    @Binding var currentIndex: String
     let content: (ScrollViewProxy) -> Content
     
     init(scrollOffset: Binding<CGFloat>,
+         currentIndex: Binding<String>,
          @ViewBuilder content: @escaping (ScrollViewProxy) -> Content) {
         _scrollOffset = scrollOffset
+        _currentIndex = currentIndex
         self.content = content
     }
     
     var body: some View {
-        ScrollView {
-            ScrollViewReader { proxy in
+        ScrollViewReader { proxy in
+            ScrollView {
                 content(proxy)
                     .background(GeometryReader { geo in
                         let offset = -geo.frame(in: .named(scrollSpace)).minY
@@ -36,6 +39,7 @@ struct ObservableScrollView<Content>: View where Content : View {
         .onPreferenceChange(ScrollViewOffsetPreferenceKey.self) { value in
             scrollOffset = value
         }
+
     }
 }
 

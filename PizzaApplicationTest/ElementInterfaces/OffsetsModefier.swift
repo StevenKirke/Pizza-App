@@ -10,8 +10,8 @@ import SwiftUI
 
 struct OffsetsModefier: ViewModifier {
     
-    @Binding var currentIndex: Int
-    var index: Int
+    @Binding var currentIndex: String
+    var index: String
     
     func body(content: Content) -> some View {
         content
@@ -24,7 +24,9 @@ struct OffsetsModefier: ViewModifier {
             .onPreferenceChange(OffsetKey.self) { proxy in
                 withAnimation(.easeInOut) {
                     let offset = proxy.minY
-                    currentIndex = (offset < 20 && -offset < (proxy.minX / 2) && currentIndex != index ?  index/*"\(label) SCROLL"*/ : currentIndex)
+                    withAnimation(.easeInOut) {
+                        currentIndex = (offset < 20 && -offset < (proxy.midX) && currentIndex != index)  ? "\(index) SCROLL" : currentIndex
+                    }
                 }
                 
             }

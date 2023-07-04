@@ -24,10 +24,9 @@ class ContentViewModel: ObservableObject {
     
     @Published var categoryAndMealList: [CategoryForList] = []
     
-    //@Published var currentIndex: Int = 0
     
     init() {
-        //getCategories()
+        getCategories()
     }
     
     private func getCategories() {
@@ -168,36 +167,5 @@ class ContentViewModel: ObservableObject {
                 }
             }
         }
-//        guard let name = categoryAndMealList.first?.categoryName else {
-//            return
-//        }
-        //self.currentLabel = name
     }
-    /*
-    func saveData() {
-        self.workUserDefaults.saveUserDefault(currentData: categoryAndMealList)
-        print("save user data")
-        self.isUserDefault = true
-    }
-    
-    func loadData() {
-        DispatchQueue.main.async {
-            guard let userDefault = self.workUserDefaults.writeUserDefault(model: self.categoryAndMealList) else {
-                print("Error load user default")
-                return
-            }
-            self.categoryAndMealList = userDefault
-            print(self.categoryAndMealList)
-        }
-    }
-    
-    func removeData() {
-        self.workUserDefaults.removeUserDefault()
-        print("delete user data")
-    }
-    
-    func removeAllData() {
-        self.categoryAndMealList = []
-    }
-    */
 }

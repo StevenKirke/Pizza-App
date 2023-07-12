@@ -16,4 +16,12 @@ extension String {
     func replace() -> String {
         self.replacingOccurrences(of: " ", with: "%20")
     }
+    
+    func capitalizingFirstLetter() -> String {
+        return prefix(1).capitalized + dropFirst()
+    }
+
+    mutating func capitalizeFirstLetter() {
+        self = self.capitalizingFirstLetter()
+    }
 }

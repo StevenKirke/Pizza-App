@@ -18,6 +18,30 @@ struct ContentView: View {
     
     var body: some View {
         GeometryReader { proxy in
+            HStack {
+                VStack (spacing: 10) {
+                    Text("\(contenVM.categoryAndMealList.count)")
+                    Button(action: {
+                        contenVM.saveFileManager()
+                    }) {
+                        Text("Save file manager")
+                    }
+                    Button(action: {
+                        contenVM.retrieveFileManager()
+                    }) {
+                        Text("Retrieve file manager")
+                    }
+                }
+            }
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+        }
+        .background(Color.c_F3F5F9)
+        .environmentObject(globalModel)
+        .edgesIgnoringSafeArea(.bottom)
+    }
+    /*
+    var body: some View {
+        GeometryReader { proxy in
             ZStack(alignment: .bottom) {
                 ContentBlock(contentVM: contenVM)
                     .padding(.bottom, 83)
@@ -31,6 +55,7 @@ struct ContentView: View {
         .environmentObject(globalModel)
         .edgesIgnoringSafeArea(.bottom)
     }
+     */
 }
 
 

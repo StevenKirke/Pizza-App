@@ -12,10 +12,7 @@ class ResponseData {
     var json: DecodeJson = DecodeJson()
     
     func convertData<T: Decodable>(data: Data, models: T, returnResponse: @escaping (T?, String?) -> Void) {
-        self.json.JSONDecode(data: data, model: models) { (json, error)  in
-            guard let error = error else  {
-                return
-            }
+        self.json.decodeJSON(data: data, model: models) { (json, error)  in
             if error != "" {
                 return returnResponse(nil, "Error decode JSON \(error)")
             }
@@ -25,4 +22,6 @@ class ResponseData {
             return returnResponse(jsonConvert, "")
         }
     }
+    
+
 }

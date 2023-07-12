@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		32AAB00C2A57157C001EE87C /* FileManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32AAB00B2A57157C001EE87C /* FileManager.swift */; };
 		32F0B2952A4601A000CD0D96 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32F0B2942A4601A000CD0D96 /* AppDelegate.swift */; };
 		32F0B2972A4601A000CD0D96 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32F0B2962A4601A000CD0D96 /* SceneDelegate.swift */; };
 		32F0B2992A4601A000CD0D96 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32F0B2982A4601A000CD0D96 /* ViewController.swift */; };
@@ -42,10 +43,10 @@
 		32F0B2EB2A48F36600CD0D96 /* Sceleton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32F0B2EA2A48F36500CD0D96 /* Sceleton.swift */; };
 		32F0B2ED2A48F73500CD0D96 /* OffsetsModefier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32F0B2EC2A48F73500CD0D96 /* OffsetsModefier.swift */; };
 		32F0B2F02A48FC1800CD0D96 /* ScelenonForMenuView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32F0B2EF2A48FC1800CD0D96 /* ScelenonForMenuView.swift */; };
-		32F0B2F42A48FEC900CD0D96 /* UserDefaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32F0B2F32A48FEC900CD0D96 /* UserDefaults.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		32AAB00B2A57157C001EE87C /* FileManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileManager.swift; sourceTree = "<group>"; };
 		32F0B2912A4601A000CD0D96 /* PizzaApplicationTest.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PizzaApplicationTest.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		32F0B2942A4601A000CD0D96 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		32F0B2962A4601A000CD0D96 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -83,7 +84,6 @@
 		32F0B2EA2A48F36500CD0D96 /* Sceleton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sceleton.swift; sourceTree = "<group>"; };
 		32F0B2EC2A48F73500CD0D96 /* OffsetsModefier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OffsetsModefier.swift; sourceTree = "<group>"; };
 		32F0B2EF2A48FC1800CD0D96 /* ScelenonForMenuView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScelenonForMenuView.swift; sourceTree = "<group>"; };
-		32F0B2F32A48FEC900CD0D96 /* UserDefaults.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaults.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -123,7 +123,7 @@
 				32F0B2AD2A460E6500CD0D96 /* ModelViews */,
 				32F0B2B02A460E8900CD0D96 /* ElementInterfaces */,
 				32F0B2BB2A46220A00CD0D96 /* Enums */,
-				32F0B2F22A48FEA100CD0D96 /* WorkUserDefaults */,
+				32F0B2F22A48FEA100CD0D96 /* FileManager */,
 				32F0B2D52A48295800CD0D96 /* Networking */,
 				32F0B2B32A46170B00CD0D96 /* Extensions */,
 				32F0B2A82A460E0000CD0D96 /* Application */,
@@ -269,12 +269,12 @@
 			path = MenuView;
 			sourceTree = "<group>";
 		};
-		32F0B2F22A48FEA100CD0D96 /* WorkUserDefaults */ = {
+		32F0B2F22A48FEA100CD0D96 /* FileManager */ = {
 			isa = PBXGroup;
 			children = (
-				32F0B2F32A48FEC900CD0D96 /* UserDefaults.swift */,
+				32AAB00B2A57157C001EE87C /* FileManager.swift */,
 			);
-			path = WorkUserDefaults;
+			path = FileManager;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -353,10 +353,10 @@
 				32F0B2BE2A46E08000CD0D96 /* ContentViewModel.swift in Sources */,
 				32F0B2D92A4829A100CD0D96 /* ResponseData.swift in Sources */,
 				32F0B2B82A461F8100CD0D96 /* Images.swift in Sources */,
-				32F0B2F42A48FEC900CD0D96 /* UserDefaults.swift in Sources */,
 				32F0B2E72A485B9200CD0D96 /* MealDescription.swift in Sources */,
 				32F0B2E32A48461F00CD0D96 /* ListCategoryAndMeals.swift in Sources */,
 				32F0B2992A4601A000CD0D96 /* ViewController.swift in Sources */,
+				32AAB00C2A57157C001EE87C /* FileManager.swift in Sources */,
 				32F0B2F02A48FC1800CD0D96 /* ScelenonForMenuView.swift in Sources */,
 				32F0B2BA2A4620D600CD0D96 /* CustomTabBar.swift in Sources */,
 				32F0B2C02A46E19E00CD0D96 /* CustomNanigationTabBar.swift in Sources */,

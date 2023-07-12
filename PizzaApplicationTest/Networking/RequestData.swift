@@ -9,53 +9,44 @@ import SwiftUI
 
 class RequestData {
     
-    var responseData: ResponseData = ResponseData()
-    var json: DecodeJson = DecodeJson()
+    let task = URLSession.shared
     
-    func getData<T: Decodable>(url: String, model: T, returnData: @escaping (T?, String?) -> Void) {
+    func getData(url: String, returnData: @escaping (Data?, String) -> Void) {
         guard let url = URL(string: url) else {
-            print("Error convert URL")
+            returnData(nil, "Convert url.")
             return
         }
         let request = URLRequest(url: url)
-        let dataTask = URLSession.shared.dataTask(with: request) { [weak self] data, _, error in
+        let dataTask = task.dataTask(with: request) { data, _, error in
             if error != nil {
+                returnData(nil, "Request data.")
                 return
             }
-            guard let data = data else {
+            guard let currentData = data else {
+                returnData(nil, "Response data.")
                 return
             }
-            guard let self = self else {
-                return
-            }
-            self.responseData.convertData(data: data, models: model) { (data, error)  in
-                guard (error?.description) != nil else {
-                    return returnData(nil, error)
-                }
-                guard let data = data else {
-                    return
-                }
-                return returnData(data, "")
-            }
+            returnData(currentData, "")
         }
         dataTask.resume()
     }
     
-    func getImage(url: String?, returnData: @escaping (Data?) -> Void) {
+    func getImage(url: String?, returnData: @escaping (Data?, String) -> Void) {
         guard let url = URL(string: url ?? "") else {
-            print("Error convert URL")
+            print("Convert URL.")
             return
         }
-        let task = URLSession.shared.dataTask(with: url) { data, _, error in
+        let dataTask = task.dataTask(with: url) { data, _, error in
             if error != nil {
+                returnData(nil, "Request data.")
                 return
             }
             guard let data = data else {
+                returnData(nil, "Response data.")
                 return
             }
-            return returnData(data)
+            return returnData(data, "")
         }
-        task.resume()
-        
+        dataTask.resume()
     }
 }

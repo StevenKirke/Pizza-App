@@ -13,7 +13,7 @@ struct CardDiscriptions: View {
     @Binding var currentIndex: String
     var index: String
     var nameCategory: String
-    var categories: [ListMeals]
+    var categories: [ListMeal]
     
     var body: some View {
         VStack(spacing: 0) {

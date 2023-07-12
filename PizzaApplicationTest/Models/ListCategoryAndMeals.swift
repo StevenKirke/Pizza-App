@@ -10,10 +10,10 @@ import Foundation
 
 struct CategoryForList: Codable {
     let categoryName: String
-    var listMeals: [ListMeals]
+    var listMeals: [ListMeal]
 }
 
-struct ListMeals: Codable {
+struct ListMeal: Codable {
     var categoryName: String
     var mealName: String
     var imageUrl: String

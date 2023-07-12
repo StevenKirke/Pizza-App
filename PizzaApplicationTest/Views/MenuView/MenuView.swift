@@ -103,7 +103,6 @@ struct HeaderView: View {
                                 let name = contenVM.categoryAndMealList[index].categoryName
                                 Button(action: {
                                     self.currentIndex = "\(index) TAP"
-                                    print(self.currentIndex)
                                     proxy.scrollTo(currentIndex.replacingOccurrences(of: " TAP", with: ""), anchor: .leading)
                                 }) {
                                     Text(name)
@@ -114,6 +113,7 @@ struct HeaderView: View {
                                 }
                                 .padding(.vertical, 8)
                                 .padding(.horizontal, 16)
+                                .id(index)
                                 .background(
                                     ZStack {
                                         if anser(String(index)) {
@@ -125,9 +125,6 @@ struct HeaderView: View {
                                         }
                                     }
                                 )
-                                .id(index)
-
- 
                             }
                         }
                     }

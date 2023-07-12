@@ -9,26 +9,38 @@ import Foundation
 
 class DecodeJson {
     
-    func JSONDecode<T: Decodable>(data: Data, model: T, returnJSON: @escaping (T?, String?) -> Void)  {
+    func decodeJSON<T: Decodable>(data: Data, model: T, returnJSON: @escaping (T?, String) -> Void)  {
         DispatchQueue.main.async {
             do {
                 let decodedUsers = try JSONDecoder().decode(T.self, from: data)
                 return returnJSON(decodedUsers, "")
             } catch let error {
-                print("error JSON --- \(error.localizedDescription)")
-                return returnJSON(nil, "Error decode JSON \(error)")
+                print(error)
+                return returnJSON(nil, "Error decode JSON.")
             }
         }
     }
     
-    func JpegDecode(data: Data, returnData: @escaping (Data?, String?) -> Void)  {
+    
+    func encodeJSON<T: Encodable>(models: T, returnData: @escaping (Data?, String) -> Void) {
+        DispatchQueue.main.async {
+            do {
+                let data = try JSONEncoder().encode(models)
+                return returnData(data, "")
+            } catch {
+                return returnData(nil, "Error decode in data.")
+            }
+        }
+    }
+    
+    
+    func decodeJPEG(data: Data, returnData: @escaping (Data?, String) -> Void)  {
         DispatchQueue.main.async {
             do {
                 let encoded = try PropertyListEncoder().encode(data)
                 return returnData(encoded, "")
-            } catch let error {
-                print("error JPEG --- \(error)")
-                return returnData(nil, "Error decode JPEG \(error)")
+            } catch {
+                return returnData(nil, "Error decode JPEG.")
             }
         }
     }

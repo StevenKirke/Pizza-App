@@ -14,8 +14,7 @@ class DecodeJson {
             do {
                 let decodedUsers = try JSONDecoder().decode(T.self, from: data)
                 return returnJSON(decodedUsers, "")
-            } catch let error {
-                print(error)
+            } catch {
                 return returnJSON(nil, "Error decode JSON.")
             }
         }

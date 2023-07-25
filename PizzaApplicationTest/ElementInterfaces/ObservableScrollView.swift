@@ -12,11 +12,11 @@ struct ObservableScrollView<Content>: View where Content : View {
     @Namespace var scrollSpace
     
     @Binding var scrollOffset: CGFloat
-    @Binding var currentIndex: String
+    @Binding var currentIndex: Int
     let content: (ScrollViewProxy) -> Content
     
     init(scrollOffset: Binding<CGFloat>,
-         currentIndex: Binding<String>,
+         currentIndex: Binding<Int>,
          @ViewBuilder content: @escaping (ScrollViewProxy) -> Content) {
         _scrollOffset = scrollOffset
         _currentIndex = currentIndex

@@ -11,25 +11,37 @@ import SwiftUI
 class FileManagers {
     
     let filePath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
-    let name = "meals.json"
     
-    func saveToDocument(data: Data, returnStatus: (String) -> Void) {
+    
+    func saveToDocument(name: String, data: Data, returnStatus: (String) -> Void) {
         do {
-            let path = filePath.appendingPathComponent(name)
-            try data.write(to: path)
+            let fileURL = filePath.appendingPathComponent(name + ".json")
+            try data.write(to: fileURL)
             returnStatus("Correct")
         } catch {
             returnStatus("Error save document.")
         }
     }
     
-    func retrieveDataFromFile(returnData: (Data?, String) -> Void) {
-        let fileURL = filePath.appendingPathComponent(name)
+    
+    func retrieveDataFromFile(name: String, returnStatus: (Data?, Bool, String) -> Void) {
+        let fileURL = filePath.appendingPathComponent(name + ".json")
         do {
             let data = try Data(contentsOf: fileURL)
-            returnData(data, "")
+            returnStatus(data, true, "Yes Data")
         } catch {
-            returnData(nil, "Error retrieval data.")
+            returnStatus(nil, false, "No data.")
+        }
+    }
+    
+    
+    func removeDocument(name: String, returnStatus: (String) -> Void) {
+        let fileURL = filePath.appendingPathComponent(name + ".json")
+        do {
+            try FileManager.default.removeItem(at: fileURL)
+            returnStatus("Delete")
+        } catch  {
+            returnStatus("Error remove file.")
         }
     }
 }

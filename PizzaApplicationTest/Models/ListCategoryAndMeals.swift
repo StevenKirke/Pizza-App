@@ -9,7 +9,7 @@ import Foundation
 
 
 struct CategoryForList: Codable {
-    let categoryName: String
+    var categoryName: String
     var listMeals: [ListMeal]
 }
 

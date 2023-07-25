@@ -11,28 +11,28 @@ import SwiftUI
 struct CardDiscriptions: View {
     
     @Binding var currentIndex: String
-    var index: String
+    @Binding var isShow: Bool
+    let index: String
     var nameCategory: String
     var categories: [ListMeal]
     
     var body: some View {
         VStack(spacing: 0) {
-            ForEach(categories.indices, id: \.self) { indexList in
-                let listMeal = categories[indexList]
+            ForEach(categories.indices, id: \.self) { indexMeal in
+                let meal = categories[indexMeal]
                 HStack(alignment: .top, spacing: 32) {
-                    CustomImage(image: listMeal.imageUrl)
+                    CustomImage(image: meal.imageUrl)
                         .scaledToFill()
                         .frame(width: 132, height: 132)
                         .mask(RoundedRectangle(cornerRadius: 12))
-                    
                     VStack(alignment: .leading, spacing: 8) {
-                        Text(listMeal.mealName)
+                        Text(meal.mealName)
                             .customFont(17)
                             .foregroundColor(.c_222831)
                             .lineLimit(1)
                             .truncationMode(.tail)
                             .font(Font.footnote.weight(.semibold))
-                        Text(listMeal.description)
+                        Text(meal.description)
                             .customFont(13)
                             .foregroundColor(.c_AAAAAD)
                             .font(Font.footnote.weight(.regular))
@@ -40,7 +40,7 @@ struct CardDiscriptions: View {
                             .truncationMode(.tail)
                         HStack(spacing: 0) {
                             Spacer()
-                            Price(price: "345", action: {})
+                            Price(price: "24", action: {})
                         }
                         .padding(.top, 16)
                     }
@@ -52,7 +52,7 @@ struct CardDiscriptions: View {
                 .padding(.bottom, 2)
             }
         }
-        .modifier(OffsetsModefier(currentIndex: $currentIndex, index: index))
+        .modifier(OffsetsModefier(isShow: $isShow, currentIndex: $currentIndex, index: index))
         .id(index)
     }
 }
@@ -64,7 +64,7 @@ struct Price: View {
     
     var body: some View {
         Button(action: action) {
-            Text("от \(price) р")
+            Text("from $\(price)")
                 .customFont(13)
                 .foregroundColor(.c_FD3A69)
                 .font(Font.footnote.weight(.regular))

@@ -7,6 +7,7 @@
 
 import Foundation
 
+
 class ContentViewModel: ObservableObject {
     
     private var requestData: RequestData = RequestData()
@@ -15,21 +16,27 @@ class ContentViewModel: ObservableObject {
     
     @Published var isLoad: Bool = false
     
-    @Published var isUserDefault: Bool = false
+    @Published var isCategories: Bool = false
+    @Published var isMeals: Bool = false
+    @Published var isDescriptions: Bool = false
+    @Published var isImages: Bool = false
+    @Published var isFile: Bool = false
     
     @Published var backInMenu: Bool = false
-    
     @Published var itemNenu: CustomTabBar = CustomTabBar.menu
     
     @Published var categoryAndMealList: [CategoryForList] = []
     
+    let nameFile: String = "meals"
     
     init() {
-        getCategories()
+        self.fileSearch()
     }
+    
     
     private func getCategories() {
         let modelCategoties: Categories = Categories(categories: [])
+        let group = DispatchGroup()
         
         self.getData(url: URLs.catigories.url, model: modelCategoties) { [weak self] data, error in
             guard let self = self else {
@@ -41,7 +48,7 @@ class ContentViewModel: ObservableObject {
             guard let currentData = data else {
                 return
             }
-            self.parseJSON(data: currentData, model: modelCategoties) { [weak self]  json, error in
+            self.parseJSON(data: currentData, model: modelCategoties) { [weak self] json, error in
                 guard let self = self else {
                     return
                 }
@@ -52,70 +59,56 @@ class ContentViewModel: ObservableObject {
                     return
                 }
                 if !currentJSON.categories.isEmpty {
-                    self.addMealsToCategories(currentJSON) { categoties in
-                        print(categoties)
+                    for (_, category) in currentJSON.categories.enumerated() {
+                        group.enter()
+                        self.categoryAndMealList.append(CategoryForList(categoryName: category.strCategory,
+                                                                        listMeals: []))
+                        group.leave()
+                    }
+                }
+                group.notify(queue: .main) {
+                    self.isCategories = true
+                    print("All get category.")
+                    self.enumerationMeals() { responseMeals in
+                        print(responseMeals)
+                        self.enumerationDescription() { responseDescriptions in
+                            print(responseDescriptions)
+                            DispatchQueue.main.async {
+                                self.getImage() { responseImage in
+                                    print(responseImage)
+                                    self.isLoad = true
+                                    print("Load all data")
+                                }
+                            }
+                        }
                     }
                 }
             }
         }
     }
     
-    //
-    //            getMeals {
-    //                self.getDiscriptionMeal() {
-    //                    self.isLoad = true
-    //                    //self.saveImage()
-    //                }
-    //            }
-    
-    
-    
-    private func addMealsToCategories(_ listCategoryes: Categories, returnMeals: @escaping ([CategoryForList]) -> Void) {
-        
-        // var tempCategoris: [CategoryForList] = []
-        
-        for (_, category) in listCategoryes.categories.enumerated() {
-            self.assamblyMeals(category.strCategory) { meals in
-                let currentCategory = CategoryForList(categoryName: category.strCategory,
-                                                      listMeals: meals)
-                //currentCategory.listMeals = meals
-                print(currentCategory)
-            }
-            //tempCategoris.append(currentCategory)
-            break
-        }
-        
-    }
-    
-    
-    private func assamblyMeals(_ categoryName: String, returnMeals: @escaping ([ListMeal]) -> Void) {
-        var currentMeals: [ListMeal] = []
-        self.getMeals(url: URLs.category(categoryName).url) { [weak self] meals in
-            guard let self = self else {
-                return
-            }
-            if !meals.meals.isEmpty {
-                for (_, meal) in meals.meals.enumerated() {
-                    self.getDescription(url: meal.strMeal) { description in
-                        print("Meal name - \(meal.strMeal)")
-                        print(description)
-//                        let currentMeal: ListMeal = ListMeal(categoryName: categoryName,
-//                                                             mealName: meal.strMeal,
-//                                                             imageUrl: meal.strMealThumb,
-//                                                             imageData: Data(),
-//                                                             description: description)
-//                        currentMeals.append(currentMeal)
-                    }
+    private func enumerationMeals(returnResponse: @escaping (String) -> Void) {
+        let group = DispatchGroup()
+        if !self.categoryAndMealList.isEmpty {
+            for (indexCategory, category) in self.categoryAndMealList.enumerated() {
+                group.enter()
+                self.getMeals(categoryName: category.categoryName) { meals in
+                    self.categoryAndMealList[indexCategory].listMeals = meals
+                    group.leave()
                 }
-                //returnMeals(currentMeals)
+            }
+            group.notify(queue: .main) {
+                self.isMeals = true
+                returnResponse("All get meals.")
             }
         }
     }
-
     
-    private func getMeals(url: String, returnMeals: @escaping (Meals) -> Void) {
+    private func getMeals(categoryName: String, returnMeals: @escaping ([ListMeal]) -> Void) {
         let modelMeals: Meals = Meals(meals: [])
-        self.getData(url: url, model: modelMeals) { [weak self] data, error in
+        var currentMeals: [ListMeal] = []
+        var countMeals: Int = 0
+        self.getData(url: URLs.category(categoryName).url, model: modelMeals) { [weak self] data, error in
             guard let self = self else {
                 return
             }
@@ -135,20 +128,56 @@ class ContentViewModel: ObservableObject {
                 guard let currentJSON = json else {
                     return
                 }
-                returnMeals(currentJSON)
+                if !currentJSON.meals.isEmpty {
+                    for (_, meal) in currentJSON.meals.enumerated() {
+                        countMeals += 1
+                        currentMeals.append(ListMeal(categoryName: categoryName,
+                                                     mealName: meal.strMeal,
+                                                     imageUrl: meal.strMealThumb,
+                                                     imageData: Data(),
+                                                     description: ""))
+                        if countMeals == 3 {
+                            break
+                        }
+                    }
+                }
+                returnMeals(currentMeals)
             }
         }
     }
     
-    private func getDescription(url: String, returnDescription: @escaping (String) -> Void) {
+    private func enumerationDescription(returnResponse: @escaping (String) -> Void) {
+        let group = DispatchGroup()
+        for (indexCategory, category) in self.categoryAndMealList.enumerated() {
+            for (indexMeal, meal) in category.listMeals.enumerated() {
+                group.enter()
+                self.getDescription(meal.mealName) { [weak self] description in
+                    guard let self = self else {
+                        return
+                    }
+                    DispatchQueue.main.async {
+                        self.categoryAndMealList[indexCategory].listMeals[indexMeal].description = description
+                    }
+                    group.leave()
+                }
+            }
+        }
+        group.notify(queue: .main) {
+            self.isDescriptions = true
+            returnResponse("All get description.")
+        }
+    }
+    
+    private func getDescription(_ mealName: String, returnDescription: @escaping (String) -> Void) {
         let modelMealDescription: MealDescription = MealDescription(meals: [["" : ""]])
-        let assamblyUrl = URLs.meal(url).url.replace()
+        let assamblyUrl = URLs.meal(mealName).url.replace()
         var descriptions: String = ""
         self.getData(url: assamblyUrl, model: modelMealDescription) { [weak self] data, error in
             guard let self = self else {
                 return
             }
             if error != "" {
+                returnDescription("")
                 self.errorView(error)
             }
             guard let currentData = data else {
@@ -159,6 +188,7 @@ class ContentViewModel: ObservableObject {
                     return
                 }
                 if error != "" {
+                    returnDescription("")
                     self.errorView(error)
                 }
                 guard let currentJSON = json?.meals.first else {
@@ -181,6 +211,7 @@ class ContentViewModel: ObservableObject {
         }
     }
     
+    
     private func enumirateKey(currentKey: String, array: [String : String?], returnKey: (Bool, String) -> Void) {
         for (_, elem) in array.enumerated() {
             if elem.key == currentKey {
@@ -191,98 +222,51 @@ class ContentViewModel: ObservableObject {
             }
         }
     }
-    
-    private func getImage(url: String, returnImage: @escaping (String) -> Void) {
+
+     
+    private func getImage(returnImage: @escaping (String) -> Void) {
         
+        let group = DispatchGroup()
+        
+        for (indexCategory, _) in self.categoryAndMealList.enumerated() {
+            for (indexMeal, meal) in self.categoryAndMealList[indexCategory].listMeals.enumerated() {
+                group.enter()
+                self.requestData.getImage(url: meal.imageUrl) { [weak self] data, error in
+                    guard let self = self else {
+                        return
+                    }
+                    if error != "" {
+                        self.errorView(error)
+                    }
+                    guard let currentData = data else {
+                        return
+                    }
+                    group.leave()
+                    DispatchQueue.main.async {
+                        self.categoryAndMealList[indexCategory].listMeals[indexMeal].imageData = currentData
+                    }
+
+                }
+
+            }
+        }
+        group.notify(queue: .main) {
+            self.isImages = true
+            returnImage("All get image.")
+        }
     }
-    
-    //    private func saveImage() {
-    //        if !categoryAndMealList.isEmpty {
-    //            for (index, _) in self.categoryAndMealList.enumerated() {
-    //                for (ind, meal) in self.categoryAndMealList[index].listMeals.enumerated() {
-    //                    self.requestData.getImage(url: meal.imageUrl) { data in
-    //                        guard let currentData = data else {
-    //                            return
-    //                        }
-    //                        DispatchQueue.main.async {
-    //                            self.categoryAndMealList[index].listMeals[ind].imageData = currentData
-    //                        }
-    //                    }
-    //                }
-    //            }
-    //        }
-    //    }
-    
-    
-    //    private func getDiscriptionMeal(result: @escaping () -> Void) {
-    //        if !categoryAndMealList.isEmpty {
-    //            for (index, _) in self.categoryAndMealList.enumerated() {
-    //                for (int, meal) in self.categoryAndMealList[index].listMeals.enumerated() {
-    //                    var descriptions: String = ""
-    //                    let assamblyUrl = URLs.meal(meal.mealName).url.replace()
-    //                    self.requestData.getData(url: assamblyUrl, model: modelMealDescription) { [weak self] data, error in
-    //                        if error != "" {
-    //                            print("errors \(String(describing: error))")
-    //                        }
-    
-    //                        guard let currentData = data?.meals.first else {
-    //                            return
-    //                        }
-    //
-    //                        guard let self = self else {
-    //                            return
-    //                        }
-    //                        for i in 1...20 {
-    //                            let assablyKey = "strIngredient\(i)"
-    //                            self.enumirateKey(currentKey: assablyKey, array: currentData) { (isSearch, name) in
-    //                                guard let currentName = name else {
-    //                                    return
-    //                                }
-    //                                if currentName != "" {
-    //                                    if i == 1 {
-    //                                        descriptions += currentName + "."
-    //                                    } else {
-    //                                        descriptions += " " + currentName + "."
-    //                                    }
-    //                                }
-    //                            }
-    //                        }
-    //                        self.categoryAndMealList[index].listMeals[int].description = descriptions
-    //                    }
-    //                }
-    //            }
-    //            return result()
-    //        }
-    //    }
-    
-    
     
     
     private func getData<T: Decodable>(url: String, model: T, returnData: @escaping (Data?, String) -> Void ) {
-        self.requestData.getData(url: url) { [weak self] data, error in
-            guard let self = self else {
-                return
-            }
-            if error != "" {
-                self.errorView(error)
-            }
-            guard let currentData = data else {
-                return
-            }
-            returnData(currentData, "")
+        self.requestData.getData(url: url) { data, error in
+            returnData(data, error)
         }
     }
     
     
     private func parseJSON<T: Decodable>(data: Data, model: T, returnJSON: @escaping (T?, String) -> Void ) {
         self.jsonManagers.decodeJSON(data: data, model: model) { json, error in
-            if error != "" {
-                self.errorView(error)
-            }
-            guard let currentJSON = json else {
-                return
-            }
-            returnJSON(currentJSON, "")
+            returnJSON(json, error)
         }
     }
     
@@ -293,44 +277,60 @@ class ContentViewModel: ObservableObject {
                 return
             }
             if error != "" {
-                self.errorView(error)
+                //self.errorView(error)
             }
             guard let currentData = data else {
                 return
             }
-            self.fileManagers.saveToDocument(data: currentData) { status in
+            self.fileManagers.saveToDocument(name: nameFile, data: currentData) { status in
                 self.errorView(status)
             }
         }
     }
     
-    func retrieveFileManager() {
-        self.fileManagers.retrieveDataFromFile { [weak self]  data, error in
+    func retrieveFileManager(data: Data) {
+        self.jsonManagers.decodeJSON(data: data, model: categoryAndMealList) { [weak self] json, error in
             guard let self = self else {
                 return
             }
             if error != "" {
-                errorView(error)
+                //self.errorView(error)
             }
-            guard let currentData = data else {
+            guard let currentJSON = json else {
                 return
             }
-            self.jsonManagers.decodeJSON(data: currentData, model: categoryAndMealList) { json, error in
-                if error != "" {
-                    self.errorView(error)
-                }
-                guard let currentJSON = json else {
+            self.categoryAndMealList = currentJSON
+        }
+    }
+    
+    func fileSearch() {
+        self.fileManagers.retrieveDataFromFile(name: nameFile) { [weak self]  data, isData, error in
+            guard let self = self else {
+                return
+            }
+            if error != "" {
+                print(error)
+            }
+            if isData {
+                guard let currentData = data else {
                     return
                 }
-                print(currentJSON)
+                self.retrieveFileManager(data: currentData)
+            } else {
+                self.getCategories()
             }
+        }
+    }
+    
+    func deleteFile() {
+        self.fileManagers.removeDocument(name: nameFile) { status in
+            print(status)
         }
     }
     
     private func errorView(_ mistake: String) {
         // show error view
-        print(mistake)
+       // print(mistake)
     }
 }
-
 
